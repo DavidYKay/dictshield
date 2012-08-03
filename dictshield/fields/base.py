@@ -615,8 +615,12 @@ class DateTimeField(BaseField):
         return value
 
     def for_json(self, value):
-        v = DateTimeField.date_to_iso8601(value, self.format)
-        return v
+        if isinstance(value, datetime.datetime):
+          return DateTimeField.date_to_iso8601(value, self.format)
+        elif isinstance(value, (str, unicode)):
+          return value
+        else:
+          raise ShieldException('Not a datetime or string!', self.field_name, value)
 
 
 class DictField(BaseField):
